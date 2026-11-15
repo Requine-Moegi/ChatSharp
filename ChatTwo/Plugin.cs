@@ -139,6 +139,9 @@ public sealed class Plugin : IDalamudPlugin
             WindowSystem.AddWindow(SeStringDebugger);
             WindowSystem.AddWindow(DebuggerWindow);
 
+            if (!Config.MoveNoticeDismissed)
+                WindowSystem.AddWindow(new MoveNoticeWindow());
+
             FontManager.BuildFonts();
 
             Interface.UiBuilder.DisableCutsceneUiHide = true;

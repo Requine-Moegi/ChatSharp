@@ -16,6 +16,9 @@ tags:
   - Chat
   - Replacement
 changelog: |-
+  **1.44.3**
+  - One-time notice: Chat Sharp has moved to a new custom plugin repository
+
   **1.44.2**
   - New plugin icon: a white chat bubble with a # mark
 

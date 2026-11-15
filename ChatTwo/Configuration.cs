@@ -80,6 +80,9 @@ public class Configuration : IPluginConfiguration
 
     /// <summary>When set, every pop-out gets <c>NoResize</c> and the corner grip is not drawn. Saved sizes are not rewritten.</summary>
     public bool LockPopOutSize;
+
+    /// <summary>The one-time "Chat Sharp has moved" notice has been closed.</summary>
+    public bool MoveNoticeDismissed;
     public bool DatabaseBattleMessages;
     public bool DatabaseGatherCraftMessages;
     public bool LoadPreviousSession;
@@ -199,6 +202,7 @@ public class Configuration : IPluginConfiguration
         CanResize = other.CanResize;
         LockPopOutPosition = other.LockPopOutPosition;
         LockPopOutSize = other.LockPopOutSize;
+        MoveNoticeDismissed = other.MoveNoticeDismissed;
         DatabaseBattleMessages = other.DatabaseBattleMessages;
         DatabaseGatherCraftMessages = other.DatabaseGatherCraftMessages;
         LoadPreviousSession = other.LoadPreviousSession;
