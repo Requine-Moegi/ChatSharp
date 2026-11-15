@@ -9,8 +9,8 @@ public sealed class TypingIpc : IDisposable
 {
     private Plugin Plugin { get; }
 
-    private ICallGateProvider<ChatInputState> StateQueryGate { get; }
-    private ICallGateProvider<ChatInputState, object?> StateChangedGate { get; }
+    private readonly List<ICallGateProvider<ChatInputState>> _stateQueryGates = [];
+    private readonly List<ICallGateProvider<ChatInputState, object?>> _stateChangedGates = [];
 
     private ChatInputState LastState;
     private bool HasState;
@@ -19,10 +19,14 @@ public sealed class TypingIpc : IDisposable
     {
         Plugin = plugin;
 
-        StateQueryGate = Plugin.Interface.GetIpcProvider<ChatInputState>($"{Plugin.IpcPrefix}.GetChatInputState");
-        StateChangedGate = Plugin.Interface.GetIpcProvider<ChatInputState, object?>($"{Plugin.IpcPrefix}.ChatInputStateChanged");
+        foreach (var prefix in Plugin.IpcPrefixes)
+        {
+            var query = Plugin.Interface.GetIpcProvider<ChatInputState>($"{prefix}.GetChatInputState");
+            query.RegisterFunc(GetState);
+            _stateQueryGates.Add(query);
 
-        StateQueryGate.RegisterFunc(GetState);
+            _stateChangedGates.Add(Plugin.Interface.GetIpcProvider<ChatInputState, object?>($"{prefix}.ChatInputStateChanged"));
+        }
     }
 
     private ChatInputState BuildState()
@@ -52,11 +56,13 @@ public sealed class TypingIpc : IDisposable
 
         HasState = true;
         LastState = state;
-        StateChangedGate.SendMessage(state);
+        foreach (var gate in _stateChangedGates)
+            gate.SendMessage(state);
     }
 
     public void Dispose()
     {
-        StateQueryGate.UnregisterFunc();
+        foreach (var gate in _stateQueryGates)
+            gate.UnregisterFunc();
     }
 }

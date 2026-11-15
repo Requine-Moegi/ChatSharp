@@ -6,31 +6,40 @@ namespace ChatTwo;
 
 public sealed class IpcManager : IDisposable
 {
-    private ICallGateProvider<string> RegisterGate { get; }
-    private ICallGateProvider<string, object?> UnregisterGate { get; }
-    private ICallGateProvider<object?> AvailableGate { get; }
-    private ICallGateProvider<string, PlayerPayload?, ulong, Payload?, SeString?, SeString?, object?> InvokeGate { get; }
+    private readonly List<ICallGateProvider<string>> _registerGates = [];
+    private readonly List<ICallGateProvider<string, object?>> _unregisterGates = [];
+    private readonly List<ICallGateProvider<object?>> _availableGates = [];
+    private readonly List<ICallGateProvider<string, PlayerPayload?, ulong, Payload?, SeString?, SeString?, object?>> _invokeGates = [];
 
     public List<string> Registered { get; } = [];
 
     public IpcManager()
     {
-        RegisterGate = Plugin.Interface.GetIpcProvider<string>($"{Plugin.IpcPrefix}.Register");
-        RegisterGate.RegisterFunc(Register);
+        foreach (var prefix in Plugin.IpcPrefixes)
+        {
+            var register = Plugin.Interface.GetIpcProvider<string>($"{prefix}.Register");
+            register.RegisterFunc(Register);
+            _registerGates.Add(register);
 
-        AvailableGate = Plugin.Interface.GetIpcProvider<object?>($"{Plugin.IpcPrefix}.Available");
+            var available = Plugin.Interface.GetIpcProvider<object?>($"{prefix}.Available");
+            _availableGates.Add(available);
 
-        UnregisterGate = Plugin.Interface.GetIpcProvider<string, object?>($"{Plugin.IpcPrefix}.Unregister");
-        UnregisterGate.RegisterAction(Unregister);
+            var unregister = Plugin.Interface.GetIpcProvider<string, object?>($"{prefix}.Unregister");
+            unregister.RegisterAction(Unregister);
+            _unregisterGates.Add(unregister);
 
-        InvokeGate = Plugin.Interface.GetIpcProvider<string, PlayerPayload?, ulong, Payload?, SeString?, SeString?, object?>($"{Plugin.IpcPrefix}.Invoke");
+            var invoke = Plugin.Interface.GetIpcProvider<string, PlayerPayload?, ulong, Payload?, SeString?, SeString?, object?>($"{prefix}.Invoke");
+            _invokeGates.Add(invoke);
+        }
 
-        AvailableGate.SendMessage();
+        foreach (var gate in _availableGates)
+            gate.SendMessage();
     }
 
     public void Invoke(string id, PlayerPayload? sender, ulong contentId, Payload? payload, SeString? senderString, SeString? content)
     {
-        InvokeGate.SendMessage(id, sender, contentId, payload, senderString, content);
+        foreach (var gate in _invokeGates)
+            gate.SendMessage(id, sender, contentId, payload, senderString, content);
     }
 
     private string Register()
@@ -47,8 +56,10 @@ public sealed class IpcManager : IDisposable
 
     public void Dispose()
     {
-        UnregisterGate.UnregisterFunc();
-        RegisterGate.UnregisterFunc();
+        foreach (var gate in _unregisterGates)
+            gate.UnregisterAction();
+        foreach (var gate in _registerGates)
+            gate.UnregisterFunc();
         Registered.Clear();
     }
 }
