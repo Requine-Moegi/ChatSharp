@@ -79,10 +79,8 @@ public class InputHandler
         uint? inputColour;
         if (Plugin.Config.ChatColours.TryGetValue(inputType, out var inputCol))
             inputColour = inputCol;
-        else if (Plugin.Config.VanillaStyle)
-            inputColour = Plugin.Functions.Chat.GetChannelColor(inputType) ?? inputType.DefaultColor();
         else
-            inputColour = inputType.DefaultColor();
+            inputColour = Plugin.Functions.Chat.GetChannelColor(inputType) ?? inputType.DefaultColor();
 
         if (!isCommand && Plugin.ExtraChat.ChannelOverride is var (_, overrideColour))
             inputColour = overrideColour;

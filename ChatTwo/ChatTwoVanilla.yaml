@@ -1,9 +1,9 @@
-name: Chat 2 Vanilla
+name: Chat Sharp
 author: Infi, Anna
-punchline: Chat 2 that looks like the vanilla chat window.
+punchline: The game's chat window, with unlimited tabs.
 description: |-
-  A Chat 2 fork that looks like the game's own chat window, with unlimited tabs.
-  Turn off Vanilla style for the normal Chat 2 look. Installs alongside Chat 2.
+  Chat Sharp (C#) is the game's own chat window, with unlimited tabs.
+  Open it with /chatsharp. /chat2vanilla still works.
 
   Based on Chat 2 by Anna and Infi (EUPL-1.2): https://github.com/Infiziert90/ChatTwo
 repo_url: https://github.com/Requine-Moegi/ChatTwoVanilla
@@ -15,6 +15,12 @@ tags:
   - Chat
   - Replacement
 changelog: |-
+  **1.44.0**
+  - Now called Chat Sharp (C#). Open it with /chatsharp. /chat2vanilla still works.
+  - The window always uses the game's chat look.
+  - Pop-outs can be locked in place and locked in size.
+  - Settings are grouped into General, Appearance, Tabs, Pop-outs, Chat, and Advanced.
+
   **1.43.21**
   - Switching back to a tab stays at the bottom
 
@@ -43,7 +49,7 @@ changelog: |-
   - Pop-outs remember their position and size
 
   **1.43.13**
-  - Font size setting in Vanilla Style; text no longer scales with Dalamud
+  - Font size setting; text no longer scales with Dalamud
 
   **1.43.12**
   - Chat text size now matches the game when Dalamud's scale differs

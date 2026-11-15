@@ -1,11 +1,11 @@
 # Context Menu IPC Integration
 
-Chat 2 Vanilla registers IPC under `ChatTwoVanilla.*` so it can load beside the
-original Chat 2 plugin, which keeps `ChatTwo.*`. The examples below use this
-fork's channel names. The C# type `ChatTwo.Code.ChatType` is unchanged.
+Chat Sharp registers IPC under `ChatTwoVanilla.*` so it can load beside the
+original Chat 2 plugin, which keeps `ChatTwo.*`. The channel names are unchanged
+so existing integrations keep working. The C# type `ChatTwo.Code.ChatType` is unchanged.
 
 If you want to display custom menu items in the chat context menu, you can use
-Chat 2 Vanilla's IPC.
+Chat Sharp's IPC.
 
 Here's an example.
 
@@ -18,7 +18,7 @@ public class ContextMenuIntegration {
     // when your plugin is unloaded.
     private ICallGateSubscriber<string, object?> Unregister { get; }
     // You should subscribe to this event in order to receive a notification
-    // when Chat 2 is loaded or updated, so you can re-register.
+    // when Chat Sharp is loaded or updated, so you can re-register.
     private ICallGateSubscriber<object?> Available { get; }
     // Subscribe to this to draw your custom context menu items.
     private ICallGateSubscriber<string, PlayerPayload?, ulong, Payload?, SeString?, SeString?, object?> Invoke { get; }
@@ -34,10 +34,10 @@ public class ContextMenuIntegration {
     }
 
     public void Enable() {
-        // When Chat 2 becomes available (if it loads after this plugin) or when
-        // Chat 2 is updated, register automatically.
+        // When Chat Sharp becomes available (if it loads after this plugin) or when
+        // Chat Sharp is updated, register automatically.
         this.Available.Subscribe(() => this.Register());
-        // Register if Chat 2 is already loaded.
+        // Register if Chat Sharp is already loaded.
         this.Register();
 
         // Listen for context menu events.
@@ -79,7 +79,7 @@ public class ContextMenuIntegration {
 
 # Typing State IPC
 
-If you need to know whether the player is currently interacting with Chat 2's
+If you need to know whether the player is currently interacting with Chat Sharp's
 input box, subscribe to the typing IPC.
 - `ChatTwoVanilla.GetChatInputState`: call this function to retrieve the current state.
 - `ChatTwoVanilla.ChatInputStateChanged`: subscribe to this event to receive updates
@@ -88,9 +88,9 @@ Both IPC endpoints use the same tuple payload:
 ```
 (bool InputVisible, bool InputFocused, bool HasText, bool IsTyping, int TextLength, ChatType ChannelType)
 ```
-- `InputVisible`: `true` when Chat 2 is not hidden by user/cutscene/battle
+- `InputVisible`: `true` when Chat Sharp is not hidden by user/cutscene/battle
   settings.
-- `InputFocused`: `true` while the Chat 2 input box currently has keyboard focus.
+- `InputFocused`: `true` while the Chat Sharp input box currently has keyboard focus.
 - `HasText`: `true` when the input buffer contains more than whitespace.
 - `IsTyping`: convenience flag (`InputFocused && HasText`).
 - `TextLength`: length of the raw input buffer.

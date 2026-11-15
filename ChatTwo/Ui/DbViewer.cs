@@ -58,7 +58,7 @@ public class DbViewer : Window
 
     private bool NeedsScrollReset;
 
-    public DbViewer(Plugin plugin) : base("DBViewer###chat2vanilla-dbviewer")
+    public DbViewer(Plugin plugin) : base($"{Plugin.PluginName} history###chat2vanilla-dbviewer")
     {
         Plugin = plugin;
         SelectedChannels = TabsUtil.MostlyPlayer;
@@ -78,12 +78,12 @@ public class DbViewer : Window
         RespectCloseHotkey = false;
         DisableWindowSounds = true;
 
-        Plugin.Commands.Register(Plugin.ViewerCommand, "Get access to your message history, with simple filter options.", true).Execute += Toggle;
+        Plugin.Commands.Register(Plugin.ViewerCommand, "Open Chat Sharp message history.", true).Execute += Toggle;
     }
 
     public void Dispose()
     {
-        Plugin.Commands.Register(Plugin.ViewerCommand, "Get access to your message history, with simple filter options.", true).Execute -= Toggle;
+        Plugin.Commands.Register(Plugin.ViewerCommand, "Open Chat Sharp message history.", true).Execute -= Toggle;
     }
 
     private void Toggle(string _, string __) => Toggle();
@@ -152,7 +152,7 @@ public class DbViewer : Window
                 Notification = Plugin.Notification.AddNotification(
                     new Notification
                     {
-                        Title = "Chat2 Text Export",
+                        Title = "Chat Sharp Text Export",
                         Content = Language.ChatExport_Initial,
                         Type = NotificationType.Info,
                         Minimized = false,
@@ -175,7 +175,7 @@ public class DbViewer : Window
                 Notification = Plugin.Notification.AddNotification(
                     new Notification
                     {
-                        Title = "Chat2 Json Export",
+                        Title = "Chat Sharp JSON Export",
                         Content = Language.ChatExport_Initial,
                         Type = NotificationType.Info,
                         Minimized = false,
@@ -411,7 +411,7 @@ public class DbViewer : Window
                 var filteredHistory = Filter(messageHistory);
 
                 var sb = new StringBuilder();
-                await using var stream = new StreamWriter(Path.Join(InputPath, $"Chat2_{DateTime.Now:yyyy_dd_M__HH_mm_ss}.txt"));
+                await using var stream = new StreamWriter(Path.Join(InputPath, $"ChatSharp_{DateTime.Now:yyyy_dd_M__HH_mm_ss}.txt"));
 
                 var batch = 0;
                 foreach (var messages in filteredHistory.Batch(5000))
@@ -477,7 +477,7 @@ public class DbViewer : Window
 
                 var filteredHistory = Filter(messageHistory);
 
-                await using var stream = new StreamWriter(Path.Join(InputPath, $"Chat2_{DateTime.Now:yyyy_dd_M__HH_mm_ss}.json"));
+                await using var stream = new StreamWriter(Path.Join(InputPath, $"ChatSharp_{DateTime.Now:yyyy_dd_M__HH_mm_ss}.json"));
 
                 var batch = 0;
                 var messageContainer = new Messages();

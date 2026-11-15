@@ -136,11 +136,7 @@ public class ChunkHandler
         IDisposable? italicFont = null;
         if (text.Italic)
         {
-            italicFont = Plugin.Config.VanillaStyle
-                ? Plugin.FontManager.PushVanillaAxisItalic()
-                : (Plugin.Config.FontsEnabled && Plugin.FontManager.ItalicFont != null
-                    ? Plugin.FontManager.ItalicFont
-                    : Plugin.FontManager.AxisItalic).Push();
+            italicFont = Plugin.FontManager.PushVanillaAxisItalic();
         }
 
         // Check for contains here as sometimes there are multiple

@@ -6,9 +6,8 @@ using Dalamud.Interface.Utility.Raii;
 namespace ChatTwo.Ui.Style;
 
 /// <summary>
-/// The chat-window style layer. When vanilla style is off, every method is a no-op and Chat 2
-/// keeps drawing with ImGui's own window chrome. When it is on, the window background, bottom
-/// tab strip, input bar, and scrollbar are painted from game UI textures.
+/// Paints the chat window from the game's chat-log textures: background, bottom tab strip,
+/// input bar, and scrollbar.
 /// </summary>
 public static class ChatChrome
 {
@@ -18,7 +17,7 @@ public static class ChatChrome
     private static int _colorCount;
     private static int _varCount;
 
-    public static bool Enabled => Plugin.Config.VanillaStyle;
+    public static bool Enabled => true;
 
     public static VanillaUldCatalog Uld => Catalog;
 

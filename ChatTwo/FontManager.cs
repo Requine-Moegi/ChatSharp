@@ -47,15 +47,9 @@ public class FontManager
         float GlobalScale,
         string Source);
 
-    public IFontHandle RegularFont = null!;
-    public IFontHandle? ItalicFont;
-
     public IFontHandle FontAwesome = null!;
 
     public readonly byte[] GameSymFont;
-
-    private ushort[] Ranges = [];
-    private ushort[] JpRange = [];
 
     public static readonly HashSet<float> AxisFontSizeList =
     [
@@ -83,67 +77,8 @@ public class FontManager
         }
     }
 
-    private unsafe void SetUpRanges()
-    {
-        ushort[] BuildRange(IReadOnlyList<ushort>? chars, params nint[] ranges)
-        {
-            var builder = new ImFontGlyphRangesBuilderPtr(ImGuiNative.ImFontGlyphRangesBuilder());
-            // text
-            foreach (var range in ranges)
-                builder.AddRanges((ushort*)range);
-
-            // chars
-            if (chars != null)
-            {
-                for (var i = 0; i < chars.Count; i += 2)
-                {
-                    if (chars[i] == 0)
-                        break;
-
-                    for (var j = (uint) chars[i]; j <= chars[i + 1]; j++)
-                        builder.AddChar((ushort) j);
-                }
-            }
-
-            // Ingame supported ranges. The file name in the client is uppercase.
-            // A missing file used to throw here and skip the rest of BuildFonts.
-            var fdt = Plugin.DataManager.GetFile("common/font/AXIS_12.fdt")
-                      ?? Plugin.DataManager.GetFile("common/font/axis_12.fdt");
-            if (fdt != null)
-            {
-                var reader = new FdtReader(fdt.Data);
-                foreach (var c in reader.Glyphs)
-                    builder.AddChar(c.Char);
-            }
-
-            // various symbols
-            // French
-            // Romanian
-            // builder.AddText("←→↑↓《》■※☀★★☆♥♡ヅツッシ☀☁☂℃℉°♀♂♠♣♦♣♧®©™€$£♯♭♪✓√◎◆◇♦■□〇●△▽▼▲‹›≤≥<«“”─＼～");
-            builder.AddText("Œœ");
-            builder.AddText("ĂăÂâÎîȘșȚț");
-
-            // "Enclosed Alphanumerics" (partial) https://www.compart.com/en/unicode/block/U+2460
-            for (var i = 0x2460; i <= 0x24B5; i++)
-                builder.AddChar((char) i);
-
-            builder.AddChar('⓪');
-            return builder.BuildRangesToArray();
-        }
-
-        var ranges = new List<nint> { (nint)ImGui.GetIO().Fonts.GetGlyphRangesDefault() };
-        foreach (var extraRange in Enum.GetValues<ExtraGlyphRanges>())
-            if (Plugin.Config.ExtraGlyphRanges.HasFlag(extraRange))
-                ranges.Add(extraRange.Range());
-
-        Ranges = BuildRange(null, ranges.ToArray());
-        JpRange = BuildRange(GlyphRangesJapanese.GlyphRanges);
-    }
-
     public void BuildFonts()
     {
-        SetUpRanges();
-
         Axis = Plugin.Interface.UiBuilder.FontAtlas.NewGameFontHandle(new GameFontStyle(GameFontFamily.Axis, SizeInPx(Plugin.Config.FontSizeV2)));
         AxisItalic = Plugin.Interface.UiBuilder.FontAtlas.NewGameFontHandle(new GameFontStyle(GameFontFamily.Axis, SizeInPx(Plugin.Config.FontSizeV2))
         {
@@ -155,49 +90,6 @@ public class FontManager
             e.OnPreBuild(tk => tk.AddFontAwesomeIconFont(new SafeFontConfig { SizePx = GetFontSize() }));
             e.OnPostBuild(tk => tk.FitRatio(tk.Font));
         });
-
-        RegularFont = Plugin.Interface.UiBuilder.FontAtlas.NewDelegateFontHandle(
-            e => e.OnPreBuild(
-                tk =>
-                {
-                    var config = new SafeFontConfig {SizePt = Plugin.Config.GlobalFontV2.SizePt, GlyphRanges = Ranges};
-                    config.MergeFont = Plugin.Config.GlobalFontV2.FontId.AddToBuildToolkit(tk, config);
-
-                    config.SizePt = Plugin.Config.JapaneseFontV2.SizePt;
-                    config.GlyphRanges = JpRange;
-                    Plugin.Config.JapaneseFontV2.FontId.AddToBuildToolkit(tk, config);
-
-                    config.SizePt = Plugin.Config.SymbolsFontSizeV2;
-                    tk.AddGameSymbol(config);
-
-                    tk.Font = config.MergeFont;
-                }
-            ));
-
-        if (Plugin.Config.ItalicEnabled)
-        {
-            ItalicFont = Plugin.Interface.UiBuilder.FontAtlas.NewDelegateFontHandle(
-                e => e.OnPreBuild(
-                    tk =>
-                    {
-                        var config = new SafeFontConfig {SizePt = Plugin.Config.ItalicFontV2.SizePt, GlyphRanges = Ranges};
-                        config.MergeFont = Plugin.Config.ItalicFontV2.FontId.AddToBuildToolkit(tk, config);
-
-                        config.SizePt = Plugin.Config.JapaneseFontV2.SizePt;
-                        config.GlyphRanges = JpRange;
-                        Plugin.Config.JapaneseFontV2.FontId.AddToBuildToolkit(tk, config);
-
-                        config.SizePt = Plugin.Config.SymbolsFontSizeV2;
-                        tk.AddGameSymbol(config);
-
-                        tk.Font = config.MergeFont;
-                    }
-                ));
-        }
-        else
-        {
-            ItalicFont = null;
-        }
     }
 
     public static float SizeInPt(float px) => (float) (px * 3.0 / 4.0);
@@ -226,10 +118,7 @@ public class FontManager
             dalamud = 1f;
         return screenPx / dalamud;
     }
-
-    public static float GetFontSize() => Plugin.Config.VanillaStyle
-        ? VanillaFontScreenPx()
-        : Plugin.Config.FontsEnabled ? Plugin.Config.GlobalFontV2.SizePx : SizeInPx(Plugin.Config.FontSizeV2);
+    public static float GetFontSize() => VanillaFontScreenPx();
 
     /// <summary>
     /// Axis at the game's chat-log size. The handle is created with an explicit pixel size and
@@ -242,29 +131,12 @@ public class FontManager
         if (_vanillaAxis!.Available)
             return PushIfReady(_vanillaAxis, _vanillaAxisPt, _vanillaAxisBuiltPx, recordLog: true, "game Axis");
 
-        // The saved Chat 2 font stays underneath this push. Do not reveal it while
-        // the log-sized face is still building or after its build failed.
+        // The startup Axis face stays underneath this push until the log-sized face is ready.
         if (Axis is { Available: true })
-            return PushIfReady(Axis, VanillaFontScreenPx(), 0f, recordLog: true, "fallback Axis at the Fonts-tab size; log-size handle not ready");
+            return PushIfReady(Axis, VanillaFontScreenPx(), 0f, recordLog: true, "fallback Axis at the saved size; log-size handle not ready");
 
         Remember(VanillaFontScreenPx(), 0f, false, _vanillaAxis.LoadException?.Message, false, ImGui.GetFontSize(), ImGuiHelpers.GlobalScale, "fallback Dalamud default; no Axis handle is ready");
         return NopDispose.Instance;
-    }
-
-    /// <summary>
-    /// The original Chat 2 face. Used only while vanilla style is off.
-    /// An unready handle is not pushed: Dalamud's Push still stacks a null font.
-    /// </summary>
-    public IDisposable PushConfiguredFont()
-    {
-        var handle = Plugin.Config.FontsEnabled ? RegularFont : Axis;
-        if (handle is not { Available: true })
-        {
-            Remember(0f, 0f, false, handle?.LoadException?.Message, false, ImGui.GetFontSize(), ImGuiHelpers.GlobalScale, "configured font not ready; Dalamud default");
-            return NopDispose.Instance;
-        }
-
-        return handle.Push();
     }
 
     /// <summary>
@@ -426,7 +298,7 @@ public class FontManager
     {
         _loggedLogPush = true;
         _lastLogFont = new VanillaFontReport(settingPx, handlePx, ready, error, pushed, drawn, scale, source);
-        var line = $"Vanilla font: {source}; setting {settingPx:0.##}px; handle {handlePx:0.##}px; drawn {drawn:0.##}px; globalScale {scale:0.##}; ready={ready}; pushed={pushed}; error={error ?? "none"}; fontsEnabled={Plugin.Config.FontsEnabled}; savedFont={Plugin.Config.GlobalFontV2}; language={Plugin.DataManager.Language}; {Ui.Style.VanillaGameLook.DescribeLogFont()}";
+        var line = $"Chat Sharp font: {source}; setting {settingPx:0.##}px; handle {handlePx:0.##}px; drawn {drawn:0.##}px; globalScale {scale:0.##}; ready={ready}; pushed={pushed}; error={error ?? "none"}; language={Plugin.DataManager.Language}; {Ui.Style.VanillaGameLook.DescribeLogFont()}";
         if (line == _loggedLine)
             return;
 

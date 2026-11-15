@@ -183,7 +183,7 @@
 	<header>
 		<h1>
 			<MessageCircle size={16} strokeWidth={3} />
-			Chat2 viewer
+			Chat Sharp viewer
 		</h1>
 		<label class="top-bar__file">
 			<span class="top-bar__file-name">{jsonFileName ? `JSON: ${jsonFileName}` : 'JSON: not loaded'}</span>

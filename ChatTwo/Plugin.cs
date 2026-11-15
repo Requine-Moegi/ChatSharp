@@ -22,9 +22,11 @@ namespace ChatTwo;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class Plugin : IDalamudPlugin
 {
-    public const string PluginName = "Chat 2 Vanilla";
+    public const string PluginName = "Chat Sharp";
+    public const string ShortName = "C#";
     public const string IpcPrefix = "ChatTwoVanilla";
-    public const string MainCommand = "/chat2vanilla";
+    public const string MainCommand = "/chatsharp";
+    public const string LegacyMainCommand = "/chat2vanilla";
     public const string ClearCommand = "/clearlog2vanilla";
     public const string ViewerCommand = "/chat2vanillaViewer";
     public const string DebuggerCommand = "/chat2vanillaDebugger";
@@ -245,9 +247,7 @@ public sealed class Plugin : IDalamudPlugin
         Interface.UiBuilder.DisableUserUiHide = !Config.HideWhenUiHidden;
         DefaultText = ImGui.GetStyle().Colors[(int)ImGuiCol.Text];
 
-        // Vanilla style does not inherit the saved Chat 2 font. That face is only
-        // the fallback for the original look, and only once its handle is built.
-        using (Config.VanillaStyle ? FontManager.PushVanillaAxis() : FontManager.PushConfiguredFont())
+        using (FontManager.PushVanillaAxis())
             WindowSystem.Draw();
 
         ChatLog.FinalizeFrame();

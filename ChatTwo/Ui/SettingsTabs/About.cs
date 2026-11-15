@@ -35,11 +35,11 @@ public sealed class About : ISettingsTab
     {
         using var wrap = ImRaii.TextWrapPos(0.0f);
 
-        ImGui.TextUnformatted(string.Format(Language.Options_About_Opening, Plugin.PluginName));
+        ImGui.TextUnformatted("Chat Sharp (C#) is the game's own chat window, with unlimited tabs.");
 
         ImGuiHelpers.ScaledDummy(10.0f);
 
-        ImGui.TextUnformatted("Chat 2 Vanilla is a fork of Chat 2. The original plugin is by Anna (ascclemens) and Infi (Infiziert90), licensed under the EUPL-1.2. This copy was modified on 2026-11-03.");
+        ImGui.TextUnformatted("Chat Sharp is a fork of Chat 2. The original plugin is by Anna (ascclemens) and Infi (Infiziert90), licensed under the EUPL-1.2.");
         ImGui.TextUnformatted("Upstream: https://github.com/Infiziert90/ChatTwo");
 
         ImGuiHelpers.ScaledDummy(10.0f);

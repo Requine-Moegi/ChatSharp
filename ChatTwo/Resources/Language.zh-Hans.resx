@@ -1376,7 +1376,7 @@
         <value>网页界面将运行在此端口。</value>
     </data>
   <data name="Options_Webinterface_Warning_Header" xml:space="preserve">
-        <value>勾选 “启用” 并点击 “启动” 后，将加载 Chat2 的内置网络界面，并允许网络上的设备访问游戏内聊天。此功能可用手机或其他电脑看到 Chat2 的活动、切换频道和发送信息，就像在 最终幻想14 中打字一样。</value>
+        <value>勾选 “启用” 并点击 “启动” 后，将加载 Chat Sharp 的内置网络界面，并允许网络上的设备访问游戏内聊天。此功能可用手机或其他电脑看到 Chat Sharp 的活动、切换频道和发送信息，就像在 最终幻想14 中打字一样。</value>
     </data>
   <data name="Options_Webinterface_Warning_Reason" xml:space="preserve">
         <value>出于账户安全考虑，此功能不适合在本地网络之外使用，你已收到警告!</value>
@@ -1433,7 +1433,7 @@
         <value>全选</value>
     </data>
   <data name="Database_Migration_Error_Title" xml:space="preserve">
-        <value>Chat2 数据库迁移错误</value>
+        <value>Chat Sharp 数据库迁移错误</value>
     </data>
   <data name="Database_Migration_Error_Desc" xml:space="preserve">
         <value>数据库迁移失败，已创建新数据库。

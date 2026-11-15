@@ -1376,7 +1376,7 @@
         <value>La porta su cui verrà attivata questa interfaccia web.</value>
     </data>
   <data name="Options_Webinterface_Warning_Header" xml:space="preserve">
-        <value>Dopo aver selezionato 'Abilita' e aver cliccato su 'Inizia' questo caricherà l'interfaccia web integrata di Chat2, che permetterà ai dispositivi di rete di accedere alla chat in-game. Questa funzione può essere utilizzata per consentire a un telefono o a un altro computer di vedere l'attività di Chat2, cambiare canali e inviare messaggi come se si stesse digitando su FFXIV.</value>
+        <value>Dopo aver selezionato 'Abilita' e aver cliccato su 'Inizia' questo caricherà l'interfaccia web integrata di Chat Sharp, che permetterà ai dispositivi di rete di accedere alla chat in-game. Questa funzione può essere utilizzata per consentire a un telefono o a un altro computer di vedere l'attività di Chat Sharp, cambiare canali e inviare messaggi come se si stesse digitando su FFXIV.</value>
     </data>
   <data name="Options_Webinterface_Warning_Reason" xml:space="preserve">
         <value>Per motivi di sicurezza dell'account, questa funzione non è destinata ad essere utilizzata al di fuori della rete locale, sei stato avvisato!</value>
@@ -1433,7 +1433,7 @@
         <value>Select all</value>
     </data>
   <data name="Database_Migration_Error_Title" xml:space="preserve">
-        <value>Chat2 Database Migration Error</value>
+        <value>Chat Sharp Database Migration Error</value>
     </data>
   <data name="Database_Migration_Error_Desc" xml:space="preserve">
         <value>Database migration has failed, a new database will be created.

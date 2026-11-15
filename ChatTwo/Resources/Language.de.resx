@@ -1379,7 +1379,7 @@ Sie wurden gewarnt.</value>
   <data name="Options_Webinterface_Warning_Header" xml:space="preserve">
         <value>The informal translation for the provided text in German would be:
 
-Nachdem du 'Aktiviert' angeklickt und auf 'Start' gedrückt hast, wird die eingebaute Web-Oberfläche von Chat2 geladen. Dadurch können Geräte in deinem Netzwerk auf den In-Game-Chat zugreifen. Diese Funktion kann verwendet werden, um einem Handy oder einem anderen Computer zu ermöglichen, Chat2-Aktivitäten zu sehen, Kanäle zu wechseln und Nachrichten zu senden, als ob du direkt in FFXIV tippst.</value>
+Nachdem du 'Aktiviert' angeklickt und auf 'Start' gedrückt hast, wird die eingebaute Web-Oberfläche von Chat Sharp geladen. Dadurch können Geräte in deinem Netzwerk auf den In-Game-Chat zugreifen. Diese Funktion kann verwendet werden, um einem Handy oder einem anderen Computer zu ermöglichen, Chat Sharp-Aktivitäten zu sehen, Kanäle zu wechseln und Nachrichten zu senden, als ob du direkt in FFXIV tippst.</value>
     </data>
   <data name="Options_Webinterface_Warning_Reason" xml:space="preserve">
         <value>Aus Sicherheitsgründen ist diese Funktion nicht für die Nutzung außerhalb deines lokalen Netzwerks gedacht. Du wurdest gewarnt!</value>
@@ -1436,7 +1436,7 @@ Nachdem du 'Aktiviert' angeklickt und auf 'Start' gedrückt hast, wird die einge
         <value>Select all</value>
     </data>
   <data name="Database_Migration_Error_Title" xml:space="preserve">
-        <value>Chat2 Database Migration Error</value>
+        <value>Chat Sharp Database Migration Error</value>
     </data>
   <data name="Database_Migration_Error_Desc" xml:space="preserve">
         <value>Database migration has failed, a new database will be created.

@@ -37,19 +37,13 @@ public sealed class SettingsWindow : Window
 
         Tabs =
         [
-            new Display(Mutable),
-            new ChatLogConfig(Plugin, Mutable),
-            new VanillaStyleTab(Plugin, Mutable),
-            new Emote(Plugin, Mutable),
-            new Preview(Mutable),
-            new Fonts(Mutable),
-            new ChatColours(Plugin, Mutable),
-            new Tabs(Plugin, Mutable),
-            new Database(Plugin, Mutable),
-            new Webinterface(Plugin, Mutable),
-            new Miscellaneous(Mutable),
-            new Changelog(Mutable),
-            new About()
+            new GeneralPage(Mutable),
+            new AppearancePage(Plugin, Mutable),
+            new TabsPage(Plugin, Mutable),
+            new PopoutsPage(Mutable),
+            new ChatBehaviorPage(Plugin, Mutable),
+            new AdvancedPage(Plugin, Mutable),
+            new About(),
         ];
 
         RespectCloseHotkey = false;
@@ -57,7 +51,8 @@ public sealed class SettingsWindow : Window
 
         Initialise();
 
-        Plugin.Commands.Register(Plugin.MainCommand, "Perform various actions with Chat 2 Vanilla.").Execute += Command;
+        Plugin.Commands.Register(Plugin.MainCommand, "Open Chat Sharp settings. /chat2vanilla still works.").Execute += Command;
+        Plugin.Commands.Register(Plugin.LegacyMainCommand, "Alias of /chatsharp.").Execute += Command;
         Plugin.Interface.UiBuilder.OpenConfigUi += Toggle;
     }
 
@@ -65,6 +60,7 @@ public sealed class SettingsWindow : Window
     {
         Plugin.Interface.UiBuilder.OpenConfigUi -= Toggle;
         Plugin.Commands.Register(Plugin.MainCommand).Execute -= Command;
+        Plugin.Commands.Register(Plugin.LegacyMainCommand).Execute -= Command;
     }
 
     private void Command(string command, string args)
@@ -189,13 +185,7 @@ public sealed class SettingsWindow : Window
         // calculate all conditions before updating config
         var hideChanged = !Mutable.HideChat && Mutable.HideChat != Plugin.Config.HideChat;
         var languageChanged = Mutable.LanguageOverride != Plugin.Config.LanguageOverride;
-        var fontChanged = Mutable.GlobalFontV2 != Plugin.Config.GlobalFontV2
-                          || Mutable.JapaneseFontV2 != Plugin.Config.JapaneseFontV2
-                          || Mutable.ItalicFontV2 != Plugin.Config.ItalicFontV2
-                          || Mutable.ExtraGlyphRanges != Plugin.Config.ExtraGlyphRanges;
-        var fontSizeChanged = Math.Abs(Mutable.SymbolsFontSizeV2 - Plugin.Config.SymbolsFontSizeV2) > 0.001
-                          || Math.Abs(Mutable.FontSizeV2 - Plugin.Config.FontSizeV2) > 0.001;
-        var italicStateChanged = Mutable.ItalicEnabled != Plugin.Config.ItalicEnabled;
+        var fontSizeChanged = Math.Abs(Mutable.FontSizeV2 - Plugin.Config.FontSizeV2) > 0.001;
 
         CarryLivePopOuts();
         Plugin.Config.UpdateFrom(Mutable, true);
@@ -207,7 +197,7 @@ public sealed class SettingsWindow : Window
         Plugin.MessageManager.ClearAllTabs();
         Plugin.MessageManager.FilterAllTabsAsync();
 
-        if (fontChanged || fontSizeChanged || italicStateChanged)
+        if (fontSizeChanged)
             Plugin.FontManager.BuildFonts();
 
         if (languageChanged)

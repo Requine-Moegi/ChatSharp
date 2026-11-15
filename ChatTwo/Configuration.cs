@@ -6,8 +6,6 @@ using ChatTwo.Util;
 using Dalamud;
 using Dalamud.Configuration;
 using Dalamud.Game.ClientState.Keys;
-using Dalamud.Interface.FontIdentifier;
-using Dalamud.Bindings.ImGui;
 using Lumina.Text.ReadOnly;
 
 namespace ChatTwo;
@@ -67,7 +65,6 @@ public class Configuration : IPluginConfiguration
     public bool MoreCompactPretty;
     public bool HideSameTimestamps;
     public bool ShowNoviceNetwork;
-    public bool SidebarTabView;
     public bool PrintChangelog = true;
     public bool OnlyPreviewIf;
     public int PreviewMinimum = 1;
@@ -77,8 +74,12 @@ public class Configuration : IPluginConfiguration
     public LanguageOverride LanguageOverride = LanguageOverride.None;
     public bool CanMove = true;
     public bool CanResize = true;
-    public bool ShowTitleBar;
-    public bool ShowPopOutTitleBar = true;
+
+    /// <summary>When set, every pop-out gets <c>NoMove</c>. Saved positions are not rewritten.</summary>
+    public bool LockPopOutPosition;
+
+    /// <summary>When set, every pop-out gets <c>NoResize</c> and the corner grip is not drawn. Saved sizes are not rewritten.</summary>
+    public bool LockPopOutSize;
     public bool DatabaseBattleMessages;
     public bool DatabaseGatherCraftMessages;
     public bool LoadPreviousSession;
@@ -94,40 +95,15 @@ public class Configuration : IPluginConfiguration
     public bool ShowEmotes = true;
     public HashSet<string> BlockedEmotes = [];
 
-    public bool FontsEnabled = true;
-    public ExtraGlyphRanges ExtraGlyphRanges = 0;
+    /// <summary>
+    /// Point size of the Axis face used until the game's log font handle is ready.
+    /// The text you read follows the game's log font size.
+    /// </summary>
     public float FontSizeV2 = 12.75f;
-    public float SymbolsFontSizeV2 = 12.75f;
-    public SingleFontSpec GlobalFontV2 = new()
-    {
-        // dalamud only ships KR as regular, which chat2 used previously for global fonts
-        FontId = new DalamudAssetFontAndFamilyId(DalamudAsset.NotoSansCjkRegular),
-        SizePt = 12.75f,
-    };
-    public SingleFontSpec JapaneseFontV2 = new()
-    {
-        FontId = new DalamudAssetFontAndFamilyId(DalamudAsset.NotoSansCjkMedium),
-        SizePt = 12.75f,
-    };
-    public bool ItalicEnabled;
-    public SingleFontSpec ItalicFontV2 = new()
-    {
-        FontId = new DalamudAssetFontAndFamilyId(DalamudAsset.NotoSansCjkRegular),
-        SizePt = 12.75f,
-    };
 
     public float TooltipOffset;
-    public float WindowAlpha = 100f;
     public Dictionary<ChatType, uint> ChatColours = new();
     public List<Tab> Tabs = [];
-
-    public bool OverrideStyle;
-    public string? ChosenStyle;
-
-    /// <summary>
-    /// Draw the chat log with the game's chat-window textures. Off keeps the original Chat 2 ImGui look.
-    /// </summary>
-    public bool VanillaStyle = true;
 
     /// <summary>
     /// When vanilla style is on, inactive tabs with unread messages use a soft gold label.
@@ -212,7 +188,6 @@ public class Configuration : IPluginConfiguration
         MoreCompactPretty = other.MoreCompactPretty;
         HideSameTimestamps = other.HideSameTimestamps;
         ShowNoviceNetwork = other.ShowNoviceNetwork;
-        SidebarTabView = other.SidebarTabView;
         PrintChangelog = other.PrintChangelog;
         OnlyPreviewIf = other.OnlyPreviewIf;
         PreviewMinimum = other.PreviewMinimum;
@@ -222,8 +197,8 @@ public class Configuration : IPluginConfiguration
         LanguageOverride = other.LanguageOverride;
         CanMove = other.CanMove;
         CanResize = other.CanResize;
-        ShowTitleBar = other.ShowTitleBar;
-        ShowPopOutTitleBar = other.ShowPopOutTitleBar;
+        LockPopOutPosition = other.LockPopOutPosition;
+        LockPopOutSize = other.LockPopOutSize;
         DatabaseBattleMessages = other.DatabaseBattleMessages;
         DatabaseGatherCraftMessages = other.DatabaseGatherCraftMessages;
         LoadPreviousSession = other.LoadPreviousSession;
@@ -237,21 +212,10 @@ public class Configuration : IPluginConfiguration
         Use24HourClock = other.Use24HourClock;
         ShowEmotes = other.ShowEmotes;
         BlockedEmotes = other.BlockedEmotes;
-        FontsEnabled = other.FontsEnabled;
-        ItalicEnabled = other.ItalicEnabled;
-        ExtraGlyphRanges = other.ExtraGlyphRanges;
         FontSizeV2 = other.FontSizeV2;
-        GlobalFontV2 = other.GlobalFontV2;
-        JapaneseFontV2 = other.JapaneseFontV2;
-        ItalicFontV2 = other.ItalicFontV2;
-        SymbolsFontSizeV2 = other.SymbolsFontSizeV2;
         TooltipOffset = other.TooltipOffset;
-        WindowAlpha = other.WindowAlpha;
         ChatColours = other.ChatColours.ToDictionary(entry => entry.Key, entry => entry.Value);
         Tabs = other.Tabs.Select(t => t.Clone()).ToList();
-        OverrideStyle = other.OverrideStyle;
-        ChosenStyle = other.ChosenStyle;
-        VanillaStyle = other.VanillaStyle;
         HighlightUnreadTabs = other.HighlightUnreadTabs;
         VanillaFontSizePx = other.VanillaFontSizePx;
         TintInputByChannel = other.TintInputByChannel;
@@ -798,42 +762,3 @@ public static class LanguageOverrideExt
     };
 }
 
-[Serializable]
-[Flags]
-public enum ExtraGlyphRanges
-{
-    ChineseFull = 1 << 0,
-    ChineseSimplifiedCommon = 1 << 1,
-    Cyrillic = 1 << 2,
-    Japanese = 1 << 3,
-    Korean = 1 << 4,
-    Thai = 1 << 5,
-    Vietnamese = 1 << 6,
-}
-
-public static class ExtraGlyphRangesExt
-{
-    public static string Name(this ExtraGlyphRanges ranges) => ranges switch
-    {
-        ExtraGlyphRanges.ChineseFull => Language.ExtraGlyphRanges_ChineseFull_Name,
-        ExtraGlyphRanges.ChineseSimplifiedCommon => Language.ExtraGlyphRanges_ChineseSimplifiedCommon_Name,
-        ExtraGlyphRanges.Cyrillic => Language.ExtraGlyphRanges_Cyrillic_Name,
-        ExtraGlyphRanges.Japanese => Language.ExtraGlyphRanges_Japanese_Name,
-        ExtraGlyphRanges.Korean => Language.ExtraGlyphRanges_Korean_Name,
-        ExtraGlyphRanges.Thai => Language.ExtraGlyphRanges_Thai_Name,
-        ExtraGlyphRanges.Vietnamese => Language.ExtraGlyphRanges_Vietnamese_Name,
-        _ => throw new ArgumentOutOfRangeException(nameof(ranges), ranges, null),
-    };
-
-    public static unsafe nint Range(this ExtraGlyphRanges ranges) => ranges switch
-    {
-        ExtraGlyphRanges.ChineseFull => (nint)ImGui.GetIO().Fonts.GetGlyphRangesChineseFull(),
-        ExtraGlyphRanges.ChineseSimplifiedCommon => (nint)ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon(),
-        ExtraGlyphRanges.Cyrillic => (nint)ImGui.GetIO().Fonts.GetGlyphRangesCyrillic(),
-        ExtraGlyphRanges.Japanese => (nint)ImGui.GetIO().Fonts.GetGlyphRangesJapanese(),
-        ExtraGlyphRanges.Korean => (nint)ImGui.GetIO().Fonts.GetGlyphRangesKorean(),
-        ExtraGlyphRanges.Thai => (nint)ImGui.GetIO().Fonts.GetGlyphRangesThai(),
-        ExtraGlyphRanges.Vietnamese => (nint)ImGui.GetIO().Fonts.GetGlyphRangesVietnamese(),
-        _ => throw new ArgumentOutOfRangeException(nameof(ranges), ranges, null),
-    };
-}

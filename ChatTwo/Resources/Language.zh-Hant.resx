@@ -1377,7 +1377,7 @@
         <value>The port this webinterface will be running on.</value>
     </data>
   <data name="Options_Webinterface_Warning_Header" xml:space="preserve">
-        <value>After checking 'Enabled' and clicking 'Start' this will load up Chat2's built-in web interface, which will allow devices on your network to access in-game chat. This feature may be used to allow a phone or another computer to see Chat2 activity, switch channels, and send messages as though you were typing in FFXIV itself.</value>
+        <value>After checking 'Enabled' and clicking 'Start' this will load up Chat Sharp's built-in web interface, which will allow devices on your network to access in-game chat. This feature may be used to allow a phone or another computer to see Chat Sharp activity, switch channels, and send messages as though you were typing in FFXIV itself.</value>
     </data>
   <data name="Options_Webinterface_Warning_Reason" xml:space="preserve">
         <value>For reasons of account security, this feature is not intended for use outside of your local network, you have been warned!</value>
@@ -1434,7 +1434,7 @@
         <value>Select all</value>
     </data>
   <data name="Database_Migration_Error_Title" xml:space="preserve">
-        <value>Chat2 Database Migration Error</value>
+        <value>Chat Sharp Database Migration Error</value>
     </data>
   <data name="Database_Migration_Error_Desc" xml:space="preserve">
         <value>Database migration has failed, a new database will be created.

@@ -1,6 +1,6 @@
-# Chat 2 Vanilla
+# Chat Sharp
 
-A Chat 2 fork that looks like FFXIV's own chat window, while keeping unlimited tabs and everything else Chat 2 does.
+Chat Sharp (C#) is the game's own chat window, with unlimited tabs.
 
 ## Install
 
@@ -9,10 +9,10 @@ A Chat 2 fork that looks like FFXIV's own chat window, while keeping unlimited t
 
    `https://raw.githubusercontent.com/Requine-Moegi/ChatTwoVanilla/main/repo.json`
 
-3. Install **Chat 2 Vanilla** from the plugin installer.
+3. Install **Chat Sharp** from the plugin installer.
 
-Open it with `/chat2vanilla`. It can be installed alongside the original Chat 2.
+Open it with `/chatsharp`. `/chat2vanilla` still works. It can be installed alongside the original Chat 2.
 
 ## Credits
 
-Based on [Chat 2](https://github.com/Infiziert90/ChatTwo) by Anna and Infi, licensed under the [EUPL-1.2](LICENCE). See [NOTICE](NOTICE).
+Chat Sharp is a fork of [Chat 2](https://github.com/Infiziert90/ChatTwo) by Anna (ascclemens) and Infi (Infiziert90), licensed under the [EUPL-1.2](LICENCE). See [NOTICE](NOTICE).

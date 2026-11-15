@@ -17,7 +17,7 @@ public class SeStringDebugger : Window
 {
     private readonly Plugin Plugin;
 
-    public SeStringDebugger(Plugin plugin) : base("SeString Debugger###chat2vanilla-sestringdebugger")
+    public SeStringDebugger(Plugin plugin) : base($"{Plugin.PluginName} SeString###chat2vanilla-sestringdebugger")
     {
         Plugin = plugin;
 

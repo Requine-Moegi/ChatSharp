@@ -1376,7 +1376,7 @@
         <value>De poort waarop deze webinterface zal draaien.</value>
     </data>
   <data name="Options_Webinterface_Warning_Header" xml:space="preserve">
-        <value>Nadat je 'Ingeschakeld' hebt aangevinkt en op 'Start' hebt geklikt, wordt de ingebouwde webinterface van Chat2 geladen, waarmee apparaten op je netwerk toegang krijgen tot in-game chat. Deze functie kan worden gebruikt om een telefoon of een andere computer Chat2-activiteit te laten zien, van kanaal te laten wisselen en berichten te laten versturen alsof je in FFXIV zelf aan het typen bent.</value>
+        <value>Nadat je 'Ingeschakeld' hebt aangevinkt en op 'Start' hebt geklikt, wordt de ingebouwde webinterface van Chat Sharp geladen, waarmee apparaten op je netwerk toegang krijgen tot in-game chat. Deze functie kan worden gebruikt om een telefoon of een andere computer Chat Sharp-activiteit te laten zien, van kanaal te laten wisselen en berichten te laten versturen alsof je in FFXIV zelf aan het typen bent.</value>
     </data>
   <data name="Options_Webinterface_Warning_Reason" xml:space="preserve">
         <value>Om redenen van accountbeveiliging is deze functie niet bedoeld voor gebruik buiten je lokale netwerk, je bent gewaarschuwd!</value>
@@ -1433,7 +1433,7 @@
         <value>Select all</value>
     </data>
   <data name="Database_Migration_Error_Title" xml:space="preserve">
-        <value>Chat2 Database Migration Error</value>
+        <value>Chat Sharp Database Migration Error</value>
     </data>
   <data name="Database_Migration_Error_Desc" xml:space="preserve">
         <value>Database migration has failed, a new database will be created.

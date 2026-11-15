@@ -172,12 +172,9 @@ public static class VanillaGameLook
         if (Plugin.Config.ChatColours.TryGetValue(type, out var overridden))
             return ColourUtil.RgbaToVector4(overridden);
 
-        if (Plugin.Config.VanillaStyle)
-        {
-            var game = Plugin.Instance.Functions.Chat.GetChannelColor(type);
-            if (game != null)
-                return ColourUtil.RgbaToVector4(game);
-        }
+        var game = Plugin.Instance.Functions.Chat.GetChannelColor(type);
+        if (game != null)
+            return ColourUtil.RgbaToVector4(game);
 
         return ColourUtil.RgbaToVector4(type.DefaultColor());
     }
@@ -279,7 +276,7 @@ public static class VanillaGameLook
     private static float PermeationToAlpha(uint? rate)
     {
         if (rate == null)
-            return Plugin.Config.WindowAlpha / 100f;
+            return 1f;
 
         if (rate.Value <= 100)
             return 1f - rate.Value / 100f;

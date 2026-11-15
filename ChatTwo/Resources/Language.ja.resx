@@ -1376,7 +1376,7 @@
         <value>このWebインターフェイスのポートは動作します。</value>
     </data>
   <data name="Options_Webinterface_Warning_Header" xml:space="preserve">
-        <value>「有効」にチェックを入れて「開始」をクリックすると、Chat2の内蔵Webインターフェースが読み込まれ、ネットワーク上のデバイスがゲーム内チャットにアクセスできるようになります。 この機能は、電話または別のコンピュータがチャット2アクティビティを表示できるようにするために使用できます。 FFXIV を入力しているかのようにチャネルを切り替え、メッセージを送信します。</value>
+        <value>「有効」にチェックを入れて「開始」をクリックすると、Chat Sharpの内蔵Webインターフェースが読み込まれ、ネットワーク上のデバイスがゲーム内チャットにアクセスできるようになります。 この機能は、電話または別のコンピュータがChat Sharpアクティビティを表示できるようにするために使用できます。 FFXIV を入力しているかのようにチャネルを切り替え、メッセージを送信します。</value>
     </data>
   <data name="Options_Webinterface_Warning_Reason" xml:space="preserve">
         <value>アカウントのセキュリティ上の理由から、この機能はローカルネットワーク外での使用を意図したものではありません。注意してください！</value>
@@ -1433,7 +1433,7 @@
         <value>Select all</value>
     </data>
   <data name="Database_Migration_Error_Title" xml:space="preserve">
-        <value>Chat2 Database Migration Error</value>
+        <value>Chat Sharp Database Migration Error</value>
     </data>
   <data name="Database_Migration_Error_Desc" xml:space="preserve">
         <value>Database migration has failed, a new database will be created.

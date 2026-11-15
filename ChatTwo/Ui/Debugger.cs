@@ -15,7 +15,7 @@ public class DebuggerWindow : Window
     private readonly Plugin Plugin;
     private readonly ChatLog.ChatLog ChatLogWindow;
 
-    public DebuggerWindow(Plugin plugin) : base("Debugger###chat2vanilla-debugger")
+    public DebuggerWindow(Plugin plugin) : base($"{Plugin.PluginName} debugger###chat2vanilla-debugger")
     {
         Plugin = plugin;
         ChatLogWindow = plugin.ChatLog;
@@ -72,12 +72,12 @@ public class DebuggerWindow : Window
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        ImGui.TextColored(ImGuiColors.DalamudOrange, "Vanilla style");
+        ImGui.TextColored(ImGuiColors.DalamudOrange, "Window textures");
         ChatChrome.Uld.EnsureLoaded();
         ImGui.TextWrapped(ChatChrome.Uld.Summary);
 
         ImGuiHelpers.ScaledDummy(5.0f);
-        ImGui.TextColored(ImGuiColors.DalamudOrange, "Vanilla font");
+        ImGui.TextColored(ImGuiColors.DalamudOrange, "Font");
         ImGui.TextWrapped(Plugin.FontManager.DescribeVanillaFont());
         using (Plugin.FontManager.PushVanillaAxisPreview())
             ImGui.TextUnformatted($"Sample at {ImGui.GetFontSize():0.##} px: The quick brown fox jumps over the lazy dog.");

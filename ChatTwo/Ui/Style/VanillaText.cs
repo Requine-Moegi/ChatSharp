@@ -18,7 +18,7 @@ public static class VanillaText
 
     public static void DrawEdge(Vector2 pos, string text)
     {
-        if (!Plugin.Config.VanillaStyle || text.Length == 0)
+        if (text.Length == 0)
             return;
 
         var font = ImGui.GetFont();
@@ -35,7 +35,7 @@ public static class VanillaText
 
     public static unsafe void DrawEdge(Vector2 pos, byte* text, byte* textEnd)
     {
-        if (!Plugin.Config.VanillaStyle || text == null || textEnd <= text)
+        if (text == null || textEnd <= text)
             return;
 
         var length = (int)(textEnd - text);

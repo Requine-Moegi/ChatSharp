@@ -1,6 +1,6 @@
-# Vanilla style
+# Chat window
 
-Chat 2 Vanilla draws its chat log in ImGui and, when **Vanilla style** is on, paints that window to match the game's chat log. The one layout difference is tabs: every Chat 2 tab is on the bottom strip, not only the game's four. Filters, the input line, autocomplete, links, emotes, and popouts still run. The original Chat 2 chrome, including the sidebar, is what you get when the option is off.
+Chat Sharp draws its chat log in ImGui and paints that window to match the game's chat log. The one layout difference is tabs: every tab is on the bottom strip, not only the game's four. Filters, the input line, autocomplete, links, emotes, and pop-outs still run. There is no separate Chat 2 chrome.
 
 The game is not running in this repository's build environment. Everything below that depends on a live client is called out as uncertain and is on the in-game checklist.
 
@@ -28,7 +28,7 @@ Nine-grid margins come from the ULD node (`Left`/`Top`/`Right`/`Bottom` offsets)
 
 ### What the windows do
 
-While vanilla style is on, `VanillaFrame` places every node the way `ChatLog.uld` does on its 324×200 widget, then keeps those distances when the window is a different size. Bottom chrome stays a fixed design distance from the bottom of the window. The log nine-grid grows to fill the space above it. Positions are design pixels times `ImGuiHelpers.GlobalScale`. Window padding is zero, so the ULD origin is the window origin. `WindowBg` is pushed transparent and the window uses `NoTitleBar` and `NoBackground`, so the stone (or whatever is behind the window) shows through the fade. Chat 2's opacity slider is not stacked on top.
+`VanillaFrame` places every node the way `ChatLog.uld` does on its 324×200 widget, then keeps those distances when the window is a different size. Bottom chrome stays a fixed design distance from the bottom of the window. The log nine-grid grows to fill the space above it. Positions are design pixels times `ImGuiHelpers.GlobalScale`. Window padding is zero, so the ULD origin is the window origin. `WindowBg` is pushed transparent and the window uses `NoTitleBar` and `NoBackground`, so the stone (or whatever is behind the window) shows through the fade. Chat 2's opacity slider is not stacked on top.
 
 At the default 324×200 size the nodes are:
 
@@ -50,7 +50,7 @@ At the default 324×200 size the nodes are:
 - The three circles are add a tab, open settings, and hide the log. Clicking the field focuses the input. There is no fourth circle: the file only has three slots, and the close slot is the X rather than the sprout. A popout draws one pill across the strip, the gear, and a close button that docks the tab. FontAwesome is not drawn on these windows. Rename, reorder, delete, and pop-out stay on the tab right-click menu. Novice Network stays in settings. Sidebar tabs are not drawn while vanilla style is on.
 - The message child uses `NoScrollbar`. The ScrollBarB thumb is drawn on the left only while the log overflows. Its height is the visible fraction of the log, and clicking or dragging the column moves it. The log scrollbar has no arrow buttons.
 - Chat text uses Axis at the game's log font size. The channel label is Axis 14 and tab labels are Axis 12, which is what those ULD text nodes specify, not the log slider. Settings keep the user's font.
-- Channel colour is the user's Colours-tab override if one is set, otherwise `Chat.GetChannelColor` while vanilla style is on, otherwise Chat 2's default. User overrides still win. The HTTP API and the database viewer are not switched over.
+- Channel colour is the user's Colors override if one is set, otherwise `Chat.GetChannelColor`, otherwise the default. User overrides still win. The HTTP API and the database viewer are not switched over.
 - Italic text uses an Axis handle with `SkewStrength` while vanilla style is on.
 - Wrapped and unwrapped chat text, and pretty timestamps, get an 8-direction 1px outline (scaled by `max(1, GlobalScale * 0.75)`) drawn before `TextUnformatted`.
 - Background alpha is node alpha 127/255 multiplied by log permeation. The input frame uses permeation for the input (`LogPermeationRateInput`) and does not use the 127 node alpha. Tabs and buttons stay opaque. A popout with independent opacity uses that tab's opacity in place of permeation, including the input frame.
@@ -80,7 +80,7 @@ The exact `SomeName` values come from the ULD. Current clients commonly referenc
 
 ## Settings
 
-**Vanilla style** is on the Chat Log tab and on its own **Vanilla Style** tab, and it is the default for a new config. Saving settings copies it through `Configuration.UpdateFrom`. Turning it off restores Chat 2's ImGui window, font, and colors on the next draw. Shared options stay on their original tabs as well.
+The game look is the only look. Settings are grouped into General, Appearance, Tabs, Pop-outs, Chat, and Advanced. Saving settings copies them through `Configuration.UpdateFrom`.
 
 Related behaviour while it is on:
 
@@ -89,8 +89,8 @@ Related behaviour while it is on:
 - **Tint input box by chat channel** is off by default. The control is on the Chat Log tab and on the Vanilla Style tab. When it is on, the dark pixels of the input texture (ChatLog part 17) are replaced with a darkened channel hue and that texture is drawn in place of the normal one, through the same nine-grid and the same rectangle. The light rim and the transparent margin are unchanged, so the frame keeps its shape. The tinted copy is cached per channel color. A high-resolution sheet doubles the cropped pixels and does not move the destination edges. The log panel is not tinted by the channel. Say and other near-white or gray channels stay the normal dark box. The tint intensity slider defaults to 45. A temporary channel, including one typed as a `/command`, updates the box on that frame.
 - Each tab has **Log background color**, off by default, on the Tabs tab. When it is on, that tab's log nine-grid is multiplied by the picked color in the main window and in a pop-out. The color is copied by `Tab.Clone`.
 - Log background alpha follows `UiConfigOption.LogPermeationRate` while **Use game setting** is on. The override slider is 0–100% and replaces that permeation factor. The node's alpha is still multiplied, so 100% is the texture at its designed translucency. The input bar follows `LogPermeationRateInput` when that value is present. Text stays opaque. A popped-out tab with independent opacity replaces the factor for that window.
-- If the game config cannot be read, the background falls back to Chat 2's Window opacity slider. That slider is not applied on top of a successful game read.
-- Font size follows `UiConfigOption.LogFontSize`, in the same point unit as Chat 2's `FontSizeV2`. `GameFontStyle` is given `points * 4/3` pixels through `IFontAtlas.NewGameFontHandle`. The handle is pushed only once `Available` is true, including inside the message child and in pop-outs. Until then the current font stays for that frame. The Fonts tab does not change vanilla text. `/chat2vanillaDebugger` prints the handle, the last push, and a sample line.
+- If the game config cannot be read, the background falls back to fully opaque. The old window-opacity slider is gone.
+- Font size follows `UiConfigOption.LogFontSize`, in the same point unit as `FontSizeV2`. `GameFontStyle` is given `points * 4/3` pixels through `IFontAtlas.NewGameFontHandle`. The handle is pushed only once `Available` is true, including inside the message child and in pop-outs. Until then the Axis fallback stays for that frame. `FontSizeV2` is that fallback, not the size of live chat text. `/chat2vanillaDebugger` prints the handle, the last push, and a sample line.
 - The Dalamud style override is skipped for the chat log and popouts. The Chat Log tab says so under Override style.
 
 Commands and window ids, so both plugins can be loaded:
@@ -98,7 +98,7 @@ Commands and window ids, so both plugins can be loaded:
 | | Chat 2 | This fork |
 | --- | --- | --- |
 | Internal name | `ChatTwo` | `ChatTwoVanilla` |
-| Main command | `/chat2` | `/chat2vanilla` |
+| Main command | `/chat2` | `/chatsharp` (`/chat2vanilla` still works) |
 | Clear log | `/clearlog2` | `/clearlog2vanilla` |
 | History | `/chat2Viewer` | `/chat2vanillaViewer` |
 | Debugger | `/chat2Debugger` | `/chat2vanillaDebugger` |
@@ -123,8 +123,8 @@ These are decisions a live client needs to confirm. The code picks one behaviour
 - **Active marker.** The template places part 9 at (-6, -4) on a 28px tab with multiply 50. The marker is centred on whatever width the pill ended up, 4px above it, at full multiply. A wide tab's diamond should sit in the middle. The dim multiply is the template's idle state and is not used for the active or unread pill.
 - **Grip hit target.** The graphic is the top-right of the log, and dragging that graphic resizes. ImGui still also resizes from the window edges. The two can disagree while the window is docked: the graphic does not resize a docked window.
 - **Log scrollbar.** The main `ChatLog.uld` has no scrollbar node. The track and thumb are the parts from `ChatLogPanel.uld`, placed on the left at the panel's (12, 12) inset. Drag starts only on a click over the track. The thumb size uses the child's scroll range from the previous frame.
-- **Sidebar tabs** are ignored while vanilla style is on. Turn vanilla style off to get Chat 2's sidebar.
-- **Text outline** is eight extra `AddText` calls per wrapped piece. Turn vanilla style off to disable it.
+- **Sidebar tabs** are gone. Tabs stay on the bottom strip.
+- **Text outline** is eight extra `AddText` calls per wrapped piece.
 - **Tab click.** The message list is drawn before the strip, so a click highlights on the next frame. A keyboard tab change is applied before the messages, so that switch is the same frame.
 - **Popout opacity.** Independent opacity replaces permeation for that window, including the input bar. The game only has one log.
 
@@ -132,18 +132,18 @@ These are decisions a live client needs to confirm. The code picks one behaviour
 
 Build with the steps in the README, install `ChatTwoVanilla.dll` next to its json, and enable the plugin. Then:
 
-1. Toggle **Vanilla style** off and on. Off must look like Chat 2, including the Dalamud style override if you use one. On must drop the ImGui title bar and the ImGui frame.
+1. The window has no ImGui title bar and no ImGui frame. There is no style toggle and no Dalamud style override.
 2. Walk the UI theme list (Dark, Light, Classic FF, Clear Blue, and any later theme you have). The frame, tabs, input, and scrollbar should follow. Open `/chat2vanillaDebugger` and confirm the summary's theme index and texture list.
 3. Switch UI Resolution between Standard and High (4K). Edges of the frame should stay aligned, not show a doubled or halved slice.
 4. Move Log Window Transparency. The background should track the game log. Chat text should stay readable and not fade with the background. Compare a value near opaque and a value near clear.
 5. Change a channel color in the game's log settings, with no override on the Colors tab. New lines and the input text should pick it up. Set a Colors-tab override and confirm it wins. Clear the override and confirm the game color returns.
 6. Tabs sit on the bottom, as pills, with the active dot. Add more than four. The strip should scroll with the arrows and with the wheel, without shrinking the pills or showing an ImGui tab bar. Unread is a dot, not a count in the name, and the unread name is soft gold while **Highlight tabs with new messages** is on. Turn that off and the unread name stays the normal color. Right-click still renames, reorders, deletes, and pops out. A popped-out tab leaves the main strip and keeps the same bottom row. Switching tabs should keep filters and the input channel behaviour Chat 2 already has.
-7. Turn on sidebar tabs while vanilla style is on. The bottom strip should stay. Turn vanilla style off and the sidebar should come back.
+7. Tabs stay on the bottom strip. There is no sidebar layout.
 8. The channel name sits on the lower edge of the dark panel. The field below it is the rounded input frame, with the speech bubble overlapping its left side. The round buttons are plus, gear, and X. No FontAwesome glyphs on the log itself. Type, use autocomplete, click a link, and send an emote. Links must still be clickable (the outline is not the hit target).
 9. The scrollbar is the thin track on the left of the text. Scroll with the wheel and by dragging the thumb. There is no grey ImGui bar in the text.
 10. The resize graphic is the diagonal mark at the top-right of the dark panel. Dragging it should grow the window to the right and upward.
 11. Change the game's log font size. Axis in this window should follow. Open settings and confirm settings are still in your Dalamud font.
-12. Italic emotes or emphasis should slant in Axis while vanilla style is on.
+12. Italic emotes or emphasis should slant in Axis.
 13. Load original Chat 2 at the same time. Each plugin should have its own window, its own commands, its own config file, and its own IPC. Registering a context menu on `ChatTwo.Register` must not fire inside this fork, and `ChatTwoVanilla.Register` must not fire inside Chat 2.
 14. Pop out a tab with resizing allowed. Drag the main window's top-right grip, then the pop-out's. Each window keeps its own position and size; the other one must not jump.
 15. With that pop-out still open, open settings and click Save. The tab stays popped out, in the same window, and does not return to the main strip. Unchecking **Display in separate window** and saving docks that tab.

@@ -11,7 +11,6 @@ using ChatTwo.Util;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface;
-using Dalamud.Interface.Style;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
@@ -84,8 +83,9 @@ public partial class ChatLog : Window, IChatWindow
 
         InputHandler = new InputHandler(this, plugin, "MainChatLog");
 
-        Plugin.Commands.Register(Plugin.ClearCommand, "Clear the Chat 2 Vanilla chat log").Execute += ClearLog;
+        Plugin.Commands.Register(Plugin.ClearCommand, "Clear the Chat Sharp chat log").Execute += ClearLog;
         Plugin.Commands.Register(Plugin.MainCommand).Execute += ToggleChat;
+        Plugin.Commands.Register(Plugin.LegacyMainCommand).Execute += ToggleChat;
 
         Plugin.ClientState.Login += Login;
         Plugin.ClientState.Logout += Logout;
@@ -102,6 +102,7 @@ public partial class ChatLog : Window, IChatWindow
         Plugin.ClientState.Logout -= Logout;
         Plugin.ClientState.Login -= Login;
         Plugin.Commands.Register(Plugin.MainCommand).Execute -= ToggleChat;
+        Plugin.Commands.Register(Plugin.LegacyMainCommand).Execute -= ToggleChat;
         Plugin.Commands.Register(Plugin.ClearCommand).Execute -= ClearLog;
     }
 
@@ -289,23 +290,9 @@ public partial class ChatLog : Window, IChatWindow
         if (!Plugin.Config.CanMove)
             Flags |= ImGuiWindowFlags.NoMove;
 
-        if (!Plugin.Config.CanResize)
-            Flags |= ImGuiWindowFlags.NoResize;
-
-        if (Plugin.Config.VanillaStyle)
-        {
-            // The top-right game grip is the resize handle. ImGui's corner grip and border resize stay off.
-            Flags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoResize;
-            BgAlpha = 0f;
-        }
-        else
-        {
-            if (!Plugin.Config.ShowTitleBar)
-                Flags |= ImGuiWindowFlags.NoTitleBar;
-
-            if (LastViewport == ImGuiHelpers.MainViewport.Handle && !WasDocked)
-                BgAlpha = Plugin.Config.WindowAlpha / 100f;
-        }
+        // The top-right game grip is the resize handle. ImGui's corner grip and border resize stay off.
+        Flags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoResize;
+        BgAlpha = 0f;
 
         LastViewport = ImGui.GetWindowViewport().Handle;
         WasDocked = ImGui.IsWindowDocked();
@@ -337,10 +324,7 @@ public partial class ChatLog : Window, IChatWindow
         if (Plugin.Config.KeepInputFocus &&  InputHandler.Activate)
             ImGui.SetWindowFocus(WindowName);
 
-        if (Plugin.Config.VanillaStyle)
-            ChatChrome.PushWindowStyle();
-        else if (Plugin.Config is { OverrideStyle: true, ChosenStyle: not null })
-            StyleModel.GetConfiguredStyles()?.FirstOrDefault(style => style.Name == Plugin.Config.ChosenStyle)?.Push();
+        ChatChrome.PushWindowStyle();
     }
 
     public override void PostDraw()
@@ -352,10 +336,7 @@ public partial class ChatLog : Window, IChatWindow
         if (Plugin.CurrentTab.InputDisabled)
             InputHandler.Activate = false;
 
-        if (Plugin.Config.VanillaStyle)
-            ChatChrome.PopWindowStyle();
-        else if (Plugin.Config is { OverrideStyle: true, ChosenStyle: not null })
-            StyleModel.GetConfiguredStyles()?.FirstOrDefault(style => style.Name == Plugin.Config.ChosenStyle)?.Pop();
+        ChatChrome.PopWindowStyle();
     }
 
     public override void OnClose()
@@ -403,75 +384,7 @@ public partial class ChatLog : Window, IChatWindow
         if (IsChatMode && Plugin.InputPreview.IsDrawable)
             Plugin.InputPreview.CalculatePreview();
 
-        if (ChatChrome.Enabled)
-        {
-            DrawVanillaBody();
-            return;
-        }
-
-        if (Plugin.Config.SidebarTabView)
-            DrawTabSidebar();
-        else
-            DrawTabBar();
-
-        var activeTab = Plugin.CurrentTab;
-
-        // This tab has a fixed channel, so we force this channel to be always set as current
-        if (activeTab.Channel is not null)
-            activeTab.CurrentChannel.SetChannel(activeTab.Channel.Value);
-
-        if (Plugin.Config.PreviewPosition is PreviewPosition.Inside && Plugin.InputPreview.IsDrawable)
-            Plugin.InputPreview.DrawPreview();
-
-        using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, Vector2.Zero))
-            DrawChannelName(activeTab, true);
-
-        if (ImGuiUtil.IconButton(FontAwesomeIcon.Comment) && activeTab.Channel is null)
-            ImGui.OpenPopup(ChatChannelPicker);
-
-        if (activeTab.Channel is not null && ImGui.IsItemHovered())
-            ImGuiUtil.Tooltip(Language.ChatLog_SwitcherDisabled);
-
-        using (var popup = ImRaii.Popup(ChatChannelPicker))
-        {
-            if (popup)
-            {
-                foreach (var (name, channel) in GetValidChannels())
-                    if (ImGui.Selectable(name))
-                        Plugin.Functions.Chat.SetChannelWithExtraChat(channel);
-            }
-        }
-
-        ImGui.SameLine();
-
-        var buttonWidth = ImGuiUtil.CalcIconButtonSize().X;
-        var showNovice = Plugin.Config.ShowNoviceNetwork && GameFunctions.GameFunctions.IsMentor();
-        var buttonsRight = 1 + (showNovice ? 1 : 0) + (Plugin.Config.ShowHideButton ? 1 : 0);
-        var inputWidth = ImGui.GetContentRegionAvail().X - buttonWidth * buttonsRight - ImGui.GetStyle().ItemSpacing.X * buttonsRight;
-        InputHandler.DrawInputArea(activeTab, inputWidth, ref TellSpecial);
-
-        ImGui.SameLine();
-
-        if (ImGuiUtil.IconButton(FontAwesomeIcon.Cog))
-            Plugin.SettingsWindow.Toggle();
-
-        if (Plugin.Config.ShowHideButton)
-        {
-            ImGui.SameLine();
-            if (ImGuiUtil.IconButton(FontAwesomeIcon.EyeSlash))
-                UserHide();
-        }
-
-        if (ImGui.IsWindowHovered(ImGuiHoveredFlags.ChildWindows))
-            InputHandler.LastActivityTime = InputHandler.FrameTime;
-
-        if (showNovice)
-        {
-            ImGui.SameLine();
-
-            if (ImGuiUtil.IconButton(FontAwesomeIcon.Leaf))
-                GameFunctions.GameFunctions.ClickNoviceNetworkButton();
-        }
+        DrawVanillaBody();
     }
 
     public Dictionary<string, InputChannel> GetValidChannels()
@@ -1487,98 +1400,6 @@ public partial class ChatLog : Window, IChatWindow
     }
 
 
-    private void DrawTabBar()
-    {
-        using var tabBar = ImRaii.TabBar("##chat2-tabs");
-        if (!tabBar.Success)
-            return;
-
-        var previousTab = Plugin.CurrentTab;
-        for (var tabI = 0; tabI < Plugin.Config.Tabs.Count; tabI++)
-        {
-            var tab = Plugin.Config.Tabs[tabI];
-            if (tab.PopOut)
-                continue;
-
-            var unread = tabI == Plugin.LastTab || tab.UnreadMode == UnreadMode.None || tab.Unread == 0 ? "" : $" ({tab.Unread})";
-            var flags = ImGuiTabItemFlags.None;
-            if (Plugin.WantedTab == tabI)
-                flags |= ImGuiTabItemFlags.SetSelected;
-
-            using var tabItem = ImRaii.TabItem($"{tab.Name}{unread}###log-tab-{tabI}", flags);
-            DrawTabContextMenu(tab, tabI);
-
-            if (!tabItem.Success)
-                continue;
-
-            var hasTabSwitched = Plugin.LastTab != tabI;
-            Plugin.LastTab = tabI;
-
-            if (hasTabSwitched)
-                TabSwitched(tab, previousTab);
-
-            tab.Unread = 0;
-            DrawMessageLog(tab, InputHandler.PayloadHandler, GetRemainingHeightForMessageLog(true), hasTabSwitched);
-        }
-
-        Plugin.WantedTab = null;
-    }
-
-    private void DrawTabSidebar()
-    {
-        var currentTab = -1;
-        using var tabTable = ImRaii.Table("tabs-table", 2, ImGuiTableFlags.BordersInnerV | ImGuiTableFlags.SizingStretchProp | ImGuiTableFlags.Resizable);
-        if (!tabTable.Success)
-            return;
-
-        ImGui.TableSetupColumn("tabs", ImGuiTableColumnFlags.WidthStretch, 1);
-        ImGui.TableSetupColumn("chat", ImGuiTableColumnFlags.WidthStretch, 4);
-
-        ImGui.TableNextColumn();
-
-        var hasTabSwitched = false;
-        var childHeight = GetRemainingHeightForMessageLog(true);
-        using (var child = ImRaii.Child("##chat2-tab-sidebar", new Vector2(-1, childHeight)))
-        {
-            if (child)
-            {
-                var previousTab = Plugin.CurrentTab;
-                for (var tabI = 0; tabI < Plugin.Config.Tabs.Count; tabI++)
-                {
-                    var tab = Plugin.Config.Tabs[tabI];
-                    if (tab.PopOut)
-                        continue;
-
-                    var unread = tabI == Plugin.LastTab || tab.UnreadMode == UnreadMode.None || tab.Unread == 0 ? "" : $" ({tab.Unread})";
-                    var clicked = ImGui.Selectable($"{tab.Name}{unread}###log-tab-{tabI}", Plugin.LastTab == tabI || Plugin.WantedTab == tabI);
-                    DrawTabContextMenu(tab, tabI);
-
-                    if (!clicked && Plugin.WantedTab != tabI)
-                        continue;
-
-                    currentTab = tabI;
-                    hasTabSwitched = Plugin.LastTab != tabI;
-                    Plugin.LastTab = tabI;
-                    if (hasTabSwitched)
-                        TabSwitched(tab, previousTab);
-                }
-            }
-        }
-
-        ImGui.TableNextColumn();
-
-        if (currentTab == -1 && Plugin.LastTab < Plugin.Config.Tabs.Count)
-        {
-            currentTab = Plugin.LastTab;
-            Plugin.Config.Tabs[currentTab].Unread = 0;
-        }
-
-        if (currentTab > -1)
-            DrawMessageLog(Plugin.Config.Tabs[currentTab], InputHandler.PayloadHandler, childHeight, hasTabSwitched);
-
-        Plugin.WantedTab = null;
-    }
-
     private void DrawTabContextMenu(Tab tab, int i)
     {
         using var contextMenu = ImRaii.ContextPopupItem($"tab-context-menu-{i}");
@@ -1602,10 +1423,7 @@ public partial class ChatLog : Window, IChatWindow
 
         ImGui.SameLine();
 
-        var (leftIcon, leftTooltip) = Plugin.Config.SidebarTabView
-            ? (FontAwesomeIcon.ArrowUp, Language.ChatLog_Tabs_MoveUp)
-            : (FontAwesomeIcon.ArrowLeft, Language.ChatLog_Tabs_MoveLeft);
-        if (ImGuiUtil.IconButton(leftIcon, tooltip: leftTooltip) && i > 0)
+        if (ImGuiUtil.IconButton(FontAwesomeIcon.ArrowLeft, tooltip: Language.ChatLog_Tabs_MoveLeft) && i > 0)
         {
             (tabs[i - 1], tabs[i]) = (tabs[i], tabs[i - 1]);
             ImGui.CloseCurrentPopup();
@@ -1614,10 +1432,7 @@ public partial class ChatLog : Window, IChatWindow
 
         ImGui.SameLine();
 
-        var (rightIcon, rightTooltip) = Plugin.Config.SidebarTabView
-            ? (FontAwesomeIcon.ArrowDown, Language.ChatLog_Tabs_MoveDown)
-            : (FontAwesomeIcon.ArrowRight, Language.ChatLog_Tabs_MoveRight);
-        if (ImGuiUtil.IconButton(rightIcon, tooltip: rightTooltip) && i < tabs.Count - 1)
+        if (ImGuiUtil.IconButton(FontAwesomeIcon.ArrowRight, tooltip: Language.ChatLog_Tabs_MoveRight) && i < tabs.Count - 1)
         {
             (tabs[i + 1], tabs[i]) = (tabs[i], tabs[i + 1]);
             ImGui.CloseCurrentPopup();

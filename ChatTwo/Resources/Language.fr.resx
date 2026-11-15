@@ -1376,7 +1376,7 @@
         <value>Le port sur lequel s'exécutera cette interface web.</value>
     </data>
   <data name="Options_Webinterface_Warning_Header" xml:space="preserve">
-        <value>Après avoir coché 'Activé' et cliquez sur 'Démarrer', cela chargera l'interface web intégrée de Chat2, qui permettra aux périphériques de votre réseau d'accéder au chat en jeu. Cette fonctionnalité peut être utilisée pour permettre à un téléphone ou à un autre ordinateur de voir l'activité de Chat2, changer de canal, et envoyer des messages comme si vous écriviez dans FFXIV.</value>
+        <value>Après avoir coché 'Activé' et cliquez sur 'Démarrer', cela chargera l'interface web intégrée de Chat Sharp, qui permettra aux périphériques de votre réseau d'accéder au chat en jeu. Cette fonctionnalité peut être utilisée pour permettre à un téléphone ou à un autre ordinateur de voir l'activité de Chat Sharp, changer de canal, et envoyer des messages comme si vous écriviez dans FFXIV.</value>
     </data>
   <data name="Options_Webinterface_Warning_Reason" xml:space="preserve">
         <value>Pour des raisons de sécurité du compte, cette fonctionnalité n'est pas destinée à être utilisée en dehors de votre réseau local, vous avez été averti !</value>
@@ -1433,7 +1433,7 @@
         <value>Tout sélectionner</value>
     </data>
   <data name="Database_Migration_Error_Title" xml:space="preserve">
-        <value>Erreur de migration de la base de données Chat2</value>
+        <value>Erreur de migration de la base de données Chat Sharp</value>
     </data>
   <data name="Database_Migration_Error_Desc" xml:space="preserve">
         <value>La migration de la base de données a échoué, une nouvelle base de données sera créée.
