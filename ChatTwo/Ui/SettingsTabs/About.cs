@@ -40,7 +40,9 @@ public sealed class About : ISettingsTab
         ImGuiHelpers.ScaledDummy(10.0f);
 
         ImGui.TextUnformatted("Chat Sharp is a fork of Chat 2. The original plugin is by Anna (ascclemens) and Infi (Infiziert90), licensed under the EUPL-1.2.");
-        ImGui.TextUnformatted("Upstream: https://github.com/Infiziert90/ChatTwo");
+
+        ImGui.Spacing();
+        DrawKofiButtons();
 
         ImGuiHelpers.ScaledDummy(10.0f);
 
@@ -48,34 +50,16 @@ public sealed class About : ISettingsTab
         ImGui.SameLine();
         ImGui.TextColored(ImGuiColors.ParsedGold, Plugin.Interface.Manifest.Author);
 
-        ImGui.TextUnformatted(Language.Options_About_Discord);
-        ImGui.SameLine();
-        ImGui.TextColored(ImGuiColors.ParsedGold, "@infi");
-
         ImGui.TextUnformatted(Language.Options_About_Version);
         ImGui.SameLine();
         ImGui.TextColored(ImGuiColors.ParsedOrange, Plugin.Interface.Manifest.AssemblyVersion.ToString(3));
 
         ImGuiHelpers.ScaledDummy(10.0f);
 
-        ImGui.TextUnformatted(Language.Options_About_Discord_Thread);
-        ImGui.SameLine();
-        if (ImGuiUtil.IconButton(FontAwesomeIcon.ExternalLinkAlt, "discordThread"))
-            Dalamud.Utility.Util.OpenLink("https://canary.discord.com/channels/581875019861328007/1224865018789761126");
-
-        ImGui.Spacing();
-
         ImGui.TextUnformatted(Language.Options_About_Github_Issues);
         ImGui.SameLine();
         if (ImGuiUtil.IconButton(FontAwesomeIcon.ExternalLinkAlt, "githubIssues"))
-            Dalamud.Utility.Util.OpenLink("https://github.com/Infiziert90/ChatTwo/issues");
-
-        ImGuiHelpers.ScaledDummy(10.0f);
-
-        ImGui.TextUnformatted(Language.Options_About_CrowdIn);
-        ImGui.SameLine();
-        if (ImGuiUtil.IconButton(FontAwesomeIcon.ExternalLinkAlt, "crowdin"))
-            Dalamud.Utility.Util.OpenLink("https://crowdin.com/project/chattwo");
+            Dalamud.Utility.Util.OpenLink("https://github.com/Requine-Moegi/ChatTwoVanilla/issues");
 
         ImGui.Spacing();
 
@@ -97,5 +81,22 @@ public sealed class About : ISettingsTab
             }
         }
         ImGui.Spacing();
+    }
+
+    private static void DrawKofiButtons()
+    {
+        using (ImRaii.PushColor(ImGuiCol.Button, ColourUtil.RgbaToAbgr(0xFF5E5BFF)))
+        using (ImRaii.PushColor(ImGuiCol.ButtonHovered, ColourUtil.RgbaToAbgr(0xFF7775FF)))
+        using (ImRaii.PushColor(ImGuiCol.ButtonActive, ColourUtil.RgbaToAbgr(0xFF4542FF)))
+        using (ImRaii.PushColor(ImGuiCol.Text, 0xFFFFFFFF))
+        {
+            if (ImGui.Button("Infi's Ko-fi"))
+                Dalamud.Utility.Util.OpenLink("https://ko-fi.com/infiii");
+
+            ImGui.SameLine();
+
+            if (ImGui.Button("Anna's Ko-fi"))
+                Dalamud.Utility.Util.OpenLink("https://ko-fi.com/lojewalo");
+        }
     }
 }

@@ -15,4 +15,6 @@ Open it with `/chatsharp`. `/chat2vanilla` still works. It can be installed alon
 
 ## Credits
 
-Chat Sharp is a fork of [Chat 2](https://github.com/Infiziert90/ChatTwo) by Anna (ascclemens) and Infi (Infiziert90), licensed under the [EUPL-1.2](LICENCE). See [NOTICE](NOTICE).
+Chat Sharp is a fork of Chat 2 by Anna (ascclemens) and Infi (Infiziert90), licensed under the [EUPL-1.2](LICENCE). See [NOTICE](NOTICE).
+
+Report issues at https://github.com/Requine-Moegi/ChatTwoVanilla/issues.

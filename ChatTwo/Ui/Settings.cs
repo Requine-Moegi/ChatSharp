@@ -1,7 +1,6 @@
 using System.Numerics;
 using ChatTwo.Resources;
 using ChatTwo.Ui.SettingsTabs;
-using ChatTwo.Util;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
@@ -154,27 +153,6 @@ public sealed class SettingsWindow : Window
 
         if (ImGui.Button(Language.Settings_Discard)) {
             IsOpen = false;
-        }
-
-        const string buttonLabel = "Anna's Ko-fi";
-        const string buttonLabel2 = "Infi's Ko-fi";
-
-        using (ImRaii.PushColor(ImGuiCol.Button, ColourUtil.RgbaToAbgr(0xFF5E5BFF)))
-        using (ImRaii.PushColor(ImGuiCol.ButtonHovered, ColourUtil.RgbaToAbgr(0xFF7775FF)))
-        using (ImRaii.PushColor(ImGuiCol.ButtonActive, ColourUtil.RgbaToAbgr(0xFF4542FF)))
-        using (ImRaii.PushColor(ImGuiCol.Text, 0xFFFFFFFF))
-        {
-            var buttonWidth = ImGui.CalcTextSize(buttonLabel).X + ImGui.GetStyle().FramePadding.X * 2;
-            var buttonWidth2 = ImGui.CalcTextSize(buttonLabel2).X + ImGui.GetStyle().FramePadding.X * 2;
-            ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonWidth - buttonWidth2);
-
-            if (ImGui.Button(buttonLabel2))
-                Dalamud.Utility.Util.OpenLink("https://ko-fi.com/infiii");
-
-            ImGui.SameLine();
-
-            if (ImGui.Button(buttonLabel))
-                Dalamud.Utility.Util.OpenLink("https://ko-fi.com/lojewalo");
         }
 
         GameChatTabImportUi.DrawModal(Mutable);

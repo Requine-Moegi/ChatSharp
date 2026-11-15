@@ -1,11 +1,12 @@
 name: Chat Sharp
-author: Infi, Anna
+author: Moegi
 punchline: The game's chat window, with unlimited tabs.
 description: |-
   Chat Sharp (C#) is the game's own chat window, with unlimited tabs.
   Open it with /chatsharp. /chat2vanilla still works.
+  Issues: https://github.com/Requine-Moegi/ChatTwoVanilla/issues
 
-  Based on Chat 2 by Anna and Infi (EUPL-1.2): https://github.com/Infiziert90/ChatTwo
+  Based on Chat 2 by Anna (ascclemens) and Infi (Infiziert90), licensed under the EUPL-1.2.
 repo_url: https://github.com/Requine-Moegi/ChatTwoVanilla
 icon_url: https://raw.githubusercontent.com/Requine-Moegi/ChatTwoVanilla/main/ChatTwo/images/icon.png
 accepts_feedback: true
@@ -15,6 +16,11 @@ tags:
   - Chat
   - Replacement
 changelog: |-
+  **1.44.1**
+  - About lists Moegi as the author
+  - Issues open on this repository
+  - Ko-fi links for the original authors sit under the credit
+
   **1.44.0**
   - Now called Chat Sharp (C#). Open it with /chatsharp. /chat2vanilla still works.
   - The window always uses the game's chat look.
