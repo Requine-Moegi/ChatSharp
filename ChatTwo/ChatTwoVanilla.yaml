@@ -16,6 +16,9 @@ tags:
   - Chat
   - Replacement
 changelog: |-
+  **1.44.2**
+  - New plugin icon: a white chat bubble with a # mark
+
   **1.44.1**
   - About lists Moegi as the author
   - Issues open on this repository
