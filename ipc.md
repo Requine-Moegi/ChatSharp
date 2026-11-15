@@ -1,8 +1,10 @@
 # Context Menu IPC Integration
 
-Chat Sharp registers IPC under `ChatTwoVanilla.*` so it can load beside the
-original Chat 2 plugin, which keeps `ChatTwo.*`. The channel names are unchanged
-so existing integrations keep working. The C# type `ChatTwo.Code.ChatType` is unchanged.
+Chat Sharp registers IPC under `ChatSharp.*`. The same channels are also
+registered as `ChatTwoVanilla.*`, so existing integrations keep working. Both
+prefixes share one registration list and both receive context-menu and typing
+events. The original Chat 2 plugin keeps `ChatTwo.*`, so both plugins can load
+together. The C# type `ChatTwo.Code.ChatType` is unchanged.
 
 If you want to display custom menu items in the chat context menu, you can use
 Chat Sharp's IPC.
@@ -27,10 +29,10 @@ public class ContextMenuIntegration {
     private string? _id;
 
     public ChatTwoIpc(DalamudPluginInterface @interface) {
-        this.Register = @interface.GetIpcSubscriber<string>("ChatTwoVanilla.Register");
-        this.Unregister = @interface.GetIpcSubscriber<string, object?>("ChatTwoVanilla.Unregister");
-        this.Invoke = @interface.GetIpcSubscriber<string, PlayerPayload?, ulong, Payload?, SeString?, SeString?, object?>("ChatTwoVanilla.Invoke");
-        this.Available = @interface.GetIpcSubscriber<object?>("ChatTwoVanilla.Available");
+        this.Register = @interface.GetIpcSubscriber<string>("ChatSharp.Register");
+        this.Unregister = @interface.GetIpcSubscriber<string, object?>("ChatSharp.Unregister");
+        this.Invoke = @interface.GetIpcSubscriber<string, PlayerPayload?, ulong, Payload?, SeString?, SeString?, object?>("ChatSharp.Invoke");
+        this.Available = @interface.GetIpcSubscriber<object?>("ChatSharp.Available");
     }
 
     public void Enable() {
@@ -81,9 +83,11 @@ public class ContextMenuIntegration {
 
 If you need to know whether the player is currently interacting with Chat Sharp's
 input box, subscribe to the typing IPC.
-- `ChatTwoVanilla.GetChatInputState`: call this function to retrieve the current state.
-- `ChatTwoVanilla.ChatInputStateChanged`: subscribe to this event to receive updates
+- `ChatSharp.GetChatInputState`: call this function to retrieve the current state.
+- `ChatSharp.ChatInputStateChanged`: subscribe to this event to receive updates
   whenever the state changes (and once immediately after subscribing).
+`ChatTwoVanilla.GetChatInputState` and `ChatTwoVanilla.ChatInputStateChanged` are
+aliases of the same two channels.
 Both IPC endpoints use the same tuple payload:
 ```
 (bool InputVisible, bool InputFocused, bool HasText, bool IsTyping, int TextLength, ChatType ChannelType)
@@ -107,8 +111,8 @@ public sealed class TypingIntegration {
     private ICallGateSubscriber<(bool InputVisible, bool InputFocused, bool HasText, bool IsTyping, int TextLength, ChatType ChannelType)> GetChatInputState { get; }
     private ICallGateSubscriber<(bool InputVisible, bool InputFocused, bool HasText, bool IsTyping, int TextLength, ChatType ChannelType)> ChatInputStateChanged { get; }
     public TypingIntegration(DalamudPluginInterface @interface) {
-        this.GetChatInputState = @interface.GetIpcSubscriber<(bool, bool, bool, bool, int, ChatType)>("ChatTwoVanilla.GetChatInputState");
-        this.ChatInputStateChanged = @interface.GetIpcSubscriber<(bool, bool, bool, bool, int, ChatType)>("ChatTwoVanilla.ChatInputStateChanged");
+        this.GetChatInputState = @interface.GetIpcSubscriber<(bool, bool, bool, bool, int, ChatType)>("ChatSharp.GetChatInputState");
+        this.ChatInputStateChanged = @interface.GetIpcSubscriber<(bool, bool, bool, bool, int, ChatType)>("ChatSharp.ChatInputStateChanged");
     }
     public void Enable() {
         this.ChatInputStateChanged.Subscribe(OnChatInputStateChanged);

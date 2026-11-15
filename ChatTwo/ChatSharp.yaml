@@ -4,11 +4,11 @@ punchline: The game's chat window, with unlimited tabs.
 description: |-
   Chat Sharp (C#) is the game's own chat window, with unlimited tabs.
   Open it with /chatsharp. /chat2vanilla still works.
-  Issues: https://github.com/Requine-Moegi/ChatTwoVanilla/issues
+  Issues: https://github.com/Requine-Moegi/ChatSharp/issues
 
   Based on Chat 2 by Anna (ascclemens) and Infi (Infiziert90), licensed under the EUPL-1.2.
-repo_url: https://github.com/Requine-Moegi/ChatTwoVanilla
-icon_url: https://raw.githubusercontent.com/Requine-Moegi/ChatTwoVanilla/main/ChatTwo/images/icon.png
+repo_url: https://github.com/Requine-Moegi/ChatSharp
+icon_url: https://raw.githubusercontent.com/Requine-Moegi/MoegiPlugins/main/icons/ChatSharp.png
 accepts_feedback: true
 tags:
   - Social
@@ -16,6 +16,10 @@ tags:
   - Chat
   - Replacement
 changelog: |-
+  **1.45.0**
+  - Internal name is now ChatSharp. Settings and message history copy over from ChatTwoVanilla on first load
+  - IPC is available as ChatSharp.*. The old ChatTwoVanilla.* channels still work
+
   **1.44.2**
   - New plugin icon: a white chat bubble with a # mark
 

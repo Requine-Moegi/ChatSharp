@@ -59,7 +59,7 @@ public sealed class About : ISettingsTab
         ImGui.TextUnformatted(Language.Options_About_Github_Issues);
         ImGui.SameLine();
         if (ImGuiUtil.IconButton(FontAwesomeIcon.ExternalLinkAlt, "githubIssues"))
-            Dalamud.Utility.Util.OpenLink("https://github.com/Requine-Moegi/ChatTwoVanilla/issues");
+            Dalamud.Utility.Util.OpenLink("https://github.com/Requine-Moegi/ChatSharp/issues");
 
         ImGui.Spacing();
 

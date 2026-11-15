@@ -97,14 +97,14 @@ Commands and window ids, so both plugins can be loaded:
 
 | | Chat 2 | This fork |
 | --- | --- | --- |
-| Internal name | `ChatTwo` | `ChatTwoVanilla` |
+| Internal name | `ChatTwo` | `ChatSharp` |
 | Main command | `/chat2` | `/chatsharp` (`/chat2vanilla` still works) |
 | Clear log | `/clearlog2` | `/clearlog2vanilla` |
 | History | `/chat2Viewer` | `/chat2vanillaViewer` |
 | Debugger | `/chat2Debugger` | `/chat2vanillaDebugger` |
 | SeString debugger | `/chat2SeString` | `/chat2vanillaSeString` |
 | Main window | `###chat2` | `###chat2vanilla` |
-| IPC | `ChatTwo.Register`, `ChatTwo.GetChatInputState`, … | `ChatTwoVanilla.Register`, `ChatTwoVanilla.GetChatInputState`, … |
+| IPC | `ChatTwo.Register`, `ChatTwo.GetChatInputState`, … | `ChatSharp.Register`, `ChatSharp.GetChatInputState`, … (`ChatTwoVanilla.*` is an alias) |
 
 The C# namespace stays `ChatTwo`, including `ChatTwo.Code.ChatType`. ExtraChat's IPC is inbound and was not renamed. See [ipc.md](ipc.md).
 
@@ -130,7 +130,7 @@ These are decisions a live client needs to confirm. The code picks one behaviour
 
 ## In-game checklist
 
-Build with the steps in the README, install `ChatTwoVanilla.dll` next to its json, and enable the plugin. Then:
+Build with the steps in the README, install `ChatSharp.dll` next to its json, and enable the plugin. Then:
 
 1. The window has no ImGui title bar and no ImGui frame. There is no style toggle and no Dalamud style override.
 2. Walk the UI theme list (Dark, Light, Classic FF, Clear Blue, and any later theme you have). The frame, tabs, input, and scrollbar should follow. Open `/chat2vanillaDebugger` and confirm the summary's theme index and texture list.
@@ -144,7 +144,7 @@ Build with the steps in the README, install `ChatTwoVanilla.dll` next to its jso
 10. The resize graphic is the diagonal mark at the top-right of the dark panel. Dragging it should grow the window to the right and upward.
 11. Change the game's log font size. Axis in this window should follow. Open settings and confirm settings are still in your Dalamud font.
 12. Italic emotes or emphasis should slant in Axis.
-13. Load original Chat 2 at the same time. Each plugin should have its own window, its own commands, its own config file, and its own IPC. Registering a context menu on `ChatTwo.Register` must not fire inside this fork, and `ChatTwoVanilla.Register` must not fire inside Chat 2.
+13. Load original Chat 2 at the same time. Each plugin should have its own window, its own commands, its own config file, and its own IPC. Registering a context menu on `ChatTwo.Register` must not fire inside this fork, and `ChatSharp.Register` must not fire inside Chat 2. `ChatTwoVanilla.Register` is an alias of `ChatSharp.Register`.
 14. Pop out a tab with resizing allowed. Drag the main window's top-right grip, then the pop-out's. Each window keeps its own position and size; the other one must not jump.
 15. With that pop-out still open, open settings and click Save. The tab stays popped out, in the same window, and does not return to the main strip. Unchecking **Display in separate window** and saving docks that tab.
 16. **Tint input box by chat channel** starts off, and the input box is the normal dark frame. Turn it on. Party, shout, yell, and FC should recolor the dark pixels of that same frame, and the color should stay dark. The light rim, including the rounded ends, must stay the normal frame color at UI scale 100% and 150%, and with high-resolution textures on. No extra shape is drawn, and no tint pixel sits on the rim. Say, and any channel you set to white or gray on the Colors tab, should leave the box untinted. Type `/yell` or `/p` and the box should change before you send. The log background should not change. The intensity slider should strengthen and remove the tint. A popped-out tab follows its own channel. The same controls are on the Vanilla Style tab.

@@ -24,7 +24,9 @@ public sealed class Plugin : IDalamudPlugin
 {
     public const string PluginName = "Chat Sharp";
     public const string ShortName = "C#";
-    public const string IpcPrefix = "ChatTwoVanilla";
+    public const string IpcPrefix = "ChatSharp";
+    public const string LegacyIpcPrefix = "ChatTwoVanilla";
+    public static readonly string[] IpcPrefixes = [IpcPrefix, LegacyIpcPrefix];
     public const string MainCommand = "/chatsharp";
     public const string LegacyMainCommand = "/chat2vanilla";
     public const string ClearCommand = "/clearlog2vanilla";
@@ -101,6 +103,7 @@ public sealed class Plugin : IDalamudPlugin
         {
             GameStarted = Process.GetCurrentProcess().StartTime.ToUniversalTime();
 
+            ConfigMigration.CopyFromChatTwoVanilla();
             Config = Interface.GetPluginConfig() as Configuration ?? new Configuration();
 
             if (Config.Tabs.Count == 0)
